@@ -2,7 +2,7 @@
 
 class Program
 {
-    private static Game game;
+    private static Game? game;
 
     static void Main(string[] argStrings)
     {
