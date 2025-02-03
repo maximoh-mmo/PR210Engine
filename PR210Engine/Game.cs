@@ -2,45 +2,13 @@
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Graphics.OpenGL;
+using System.Reflection;
+using OpenTK.Mathematics;
 
 namespace PR210Engine
 {
     public class Game : GameWindow
     {
-        private float[] _vertices = new float[]
-        {
-            -0.5f,0.5f,-0.5f, 1,1, 1,0,0,
-            -0.5f,-0.5f,-0.5f, 1,0, 0,1,0,
-            0.5f,-0.5f,-0.5f, 0,0, 0,0,1,
-            0.5f,0.5f,-0.5f, 0,1, 1,1,0,
-            -0.5f,0.5f,0.5f,1,1, 1,0,0,
-            -0.5f,-0.5f,0.5f,1,0, 0,1,0,
-            0.5f,-0.5f,0.5f,0,0, 0,0,1,
-            0.5f,0.5f,0.5f,0,1, 1,1,0,
-            0.5f,0.5f,-0.5f,1,1, 1,0,0,
-            0.5f,-0.5f,-0.5f,1,0, 0,1,0,
-            0.5f,-0.5f,0.5f, 0,0, 0,0,1,
-            0.5f,0.5f,0.5f, 0,1, 1,1,0,
-            -0.5f,0.5f,-0.5f,1,1, 1,0,0,
-            -0.5f,-0.5f,-0.5f,1,0, 0,1,0,
-            -0.5f,-0.5f,0.5f, 0,0, 0,0,1,
-            -0.5f,0.5f,0.5f, 0,1, 1,1,0,
-            -0.5f,0.5f,0.5f,1,1, 1,0,0,
-            -0.5f,0.5f,-0.5f,1,0, 0,1,0,
-            0.5f,0.5f,-0.5f, 0,0, 0,0,1,
-            0.5f,0.5f,0.5f, 0,1, 1,1,0,
-            -0.5f,-0.5f,0.5f,1,1, 1,0,0,
-            -0.5f,-0.5f,-0.5f,1,0, 0,1,0,
-            0.5f,-0.5f,-0.5f, 0,0, 0,0,1,
-            0.5f,-0.5f,0.5f, 0,1, 1,1,0
-        };
-
-        private uint[] _indices =
-        {
-            0, 1, 3,
-            1, 2, 3
-        };
-
         private RenderObject[]? _renderObjects;
 
         public Game(int width, int height, string title) : base(GameWindowSettings.Default,
@@ -63,7 +31,7 @@ namespace PR210Engine
 
             GL.ClearColor(0f, 0f, 0f, 1f);
 
-            Mesh mesh = new Mesh(_vertices, _indices);
+            Mesh mesh = new Mesh(Square.Vertices, Square.Indicies);
             Texture texture = new Texture("Textures/rocky_ground.jpg");
             _renderObjects = [new RenderObject(mesh, texture)];
         }
@@ -76,9 +44,15 @@ namespace PR210Engine
 
             if (_renderObjects != null)
             {    
-                foreach (var renderObject in _renderObjects)
+                for (int i = 0; i < _renderObjects.Length; i++)
                 {
-                    renderObject.Render();
+                    float angle = 20.0f * i;
+                    var rotation = Matrix4.CreateRotationY((float)(angle * TimeSinceLastUpdate()));
+                    _renderObjects[i].SetRotation(rotation);
+                    _renderObjects[i].Render();
+                    
+
+
                 }
             }
             SwapBuffers();

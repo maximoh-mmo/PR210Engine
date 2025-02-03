@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 
 namespace PR210Engine
 {
@@ -7,9 +8,22 @@ namespace PR210Engine
         private Mesh _mesh;
         private Texture _texture;
         private Shader _shader;
+        private Matrix4 _modelMatrix;
+        private float _scale;
+        private Vector3 _position;
+        private Vector3 _rotation;
 
         public RenderObject(Mesh mesh, Texture texture)
         {
+            _scale = 1f;
+            _position = Vector3.Zero;
+            _rotation = Vector3.Zero;
+            _modelMatrix = Matrix4.CreateScale(_scale) *
+                           Matrix4.CreateRotationX(_rotation.X) *
+                           Matrix4.CreateRotationY(_rotation.Y) *
+                           Matrix4.CreateRotationZ(_rotation.Z) *
+                           Matrix4.CreateTranslation(_position);
+
             _mesh = mesh;
             _texture = texture;
             _shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
@@ -47,14 +61,24 @@ namespace PR210Engine
             GL.EnableVertexAttribArray(aColourLocation);
 
             GL.BindVertexArray(0);
-
+        }
+        public void SetMatrix4(string name, Matrix4 matrix)
+        {
+            _shader.SetMatrix4(name, matrix);
         }
 
+        public void SetRotation(Matrix4 rotationMatrix)
+        {
+            _modelMatrix = rotationMatrix + _modelMatrix;
+        }
         public void Render()
         {
             _shader.Use();
+            SetMatrix4("model", _modelMatrix);
             _texture.Bind();
             _mesh.Bind();
+            GL.Enable(EnableCap.DepthTest);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             _mesh.Draw();
             _mesh.Unbind();
             _texture.Unbind();
