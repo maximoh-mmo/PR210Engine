@@ -23,8 +23,11 @@ namespace Game
         private readonly IServiceCollection serviceCollection = new ServiceCollection();
         private IServiceProvider? serviceProvider;
 
+        LoggingSystem? LoggingSystem;
         RenderSystem? RenderSystem;
+        private List<GameObject> gameObjects;
         GameObject Cube = new();
+
         float _aspectRatio;
 
         protected override void OnUpdateFrame(FrameEventArgs args)
@@ -45,26 +48,39 @@ namespace Game
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(TriangleFace.Back);
 
-            var mesh = new CubeMesh();
+            var mesh = new PhongMesh();
 
             serviceCollection.AddSingleton<IMeshRenderingService, OpenTKMeshRenderSystem>();
             serviceCollection.AddSingleton<RenderSystem>();
+
+            serviceCollection.AddSingleton<ILoggingService, ConsoleLoggingSystem>();
+            serviceCollection.AddSingleton<LoggingSystem>();
+
             serviceProvider = serviceCollection.BuildServiceProvider();
 
             IMeshRenderingService meshRenderer = new OpenTKMeshRenderSystem();
             RenderSystem = new RenderSystem(meshRenderer);
 
-            Texture texture = new Texture();
-            texture.LoadTexture("Textures/rocky_ground.jpg");
+            ILoggingService logger = new ConsoleLoggingSystem();
+            LoggingSystem = new LoggingSystem(logger);
+
+            Texture diffuse = new Texture();
+            Texture specular = new Texture();
+            diffuse.LoadTexture("Textures/rocky_ground.jpg");
+            specular.LoadTexture("Textures/specular.png");
 
             Material material = new Material(new PhongShaderDescriptor());
-            material.SetProperty("material.diffuse", texture);
+            material.SetProperty("material.diffuse", diffuse);
+            material.SetProperty("material.specular", specular);
+            material.SetProperty("material.shininess", 1f);
 
             Cube.AddComponent(new SkinnedMeshComponent()
             {
                 Material = material,
                 Mesh = mesh
             });
+            
+            serviceProvider.GetService<LoggingSystem>()?.Log("Cube added SkinnedMeshComponent",LogLevel.Info);
 
             Cube.AddComponent(new TransformComponent());
         }

@@ -15,6 +15,5 @@ void main()
 {
 	vertexColour = aColour;
 	texCoords = aTexCoords;
-	//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));  
 	gl_Position = projection * view * model * vec4(aPosition, 1.0);
 }

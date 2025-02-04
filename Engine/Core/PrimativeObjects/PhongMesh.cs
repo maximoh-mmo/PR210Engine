@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Engine.Core.PrimativeObjects
 {
-    internal class PhongMesh : Mesh
+    public class PhongMesh : Mesh
     {
         private static float[] vertices =
         {
+            // x,y,z, n.x,n.y,n.z, u, v
             // Front face
             -0.5f, -0.5f, 0.5f, 0f, 0f, 1f, 0f, 0f,
             0.5f, -0.5f, 0.5f, 0f, 0f, 1f, 1f, 0f,

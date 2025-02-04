@@ -27,13 +27,12 @@ namespace Engine.Render
             Properties[name] = new ShaderProperty(name, type, value);
         }
 
-        public void AddTextureUnits(string name)
+        public void AddTextureUnit(string name)
         {
             if (TextureUnits.Count >= MaxTextureUnits)
             {
                 throw new Exception("Too many texture units");
             }
-
             TextureUnits.Add(name, TextureUnit.Texture0 + TextureUnits.Count);
         }
     }

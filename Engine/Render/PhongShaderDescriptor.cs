@@ -2,10 +2,13 @@
 {
     public class PhongShaderDescriptor : ShaderDescriptor
     {
-        public PhongShaderDescriptor() : base("Shaders/shader.vert", "Shaders/shader.frag")
+        public PhongShaderDescriptor() : base("Shaders/phong.vert", "Shaders/phong.frag")
         {
             AddProperty("material.diffuse", ShaderPropertyType.Texture2D, null);
-            AddTextureUnits("material.diffuse");
+            AddTextureUnit("material.diffuse");
+            AddProperty("material.specular", ShaderPropertyType.Texture2D,null);
+            AddTextureUnit("material.specular");
+            AddProperty("material.shininess", ShaderPropertyType.Float, 0f);
         }
     }
 }
