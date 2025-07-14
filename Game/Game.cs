@@ -23,7 +23,6 @@ namespace Game
         private readonly IServiceCollection serviceCollection = new ServiceCollection();
         private IServiceProvider? serviceProvider;
 
-        LoggingSystem? LoggingSystem;
         RenderSystem? RenderSystem;
         private List<GameObject> gameObjects;
         GameObject Cube = new();
@@ -53,17 +52,14 @@ namespace Game
             serviceCollection.AddSingleton<IMeshRenderingService, OpenTKMeshRenderSystem>();
             serviceCollection.AddSingleton<RenderSystem>();
 
-            serviceCollection.AddSingleton<ILoggingService, ConsoleLoggingSystem>();
-            serviceCollection.AddSingleton<LoggingSystem>();
+            serviceCollection.AddSingleton<ILoggingService, SerilogLoggingService>();
+            serviceCollection.AddSingleton<SerilogLoggingService>();
 
             serviceProvider = serviceCollection.BuildServiceProvider();
 
             IMeshRenderingService meshRenderer = new OpenTKMeshRenderSystem();
             RenderSystem = new RenderSystem(meshRenderer);
-
-            ILoggingService logger = new ConsoleLoggingSystem();
-            LoggingSystem = new LoggingSystem(logger);
-
+            
             Texture diffuse = new Texture();
             Texture specular = new Texture();
             diffuse.LoadTexture("Textures/rocky_ground.jpg");
@@ -80,7 +76,7 @@ namespace Game
                 Mesh = mesh
             });
             
-            serviceProvider.GetService<LoggingSystem>()?.Log("Cube added SkinnedMeshComponent",LogLevel.Info);
+            serviceProvider.GetService<ILoggingService>()?.LogTrace("Cube created with SkinnedMeshComponent");
 
             Cube.AddComponent(new TransformComponent());
         }
