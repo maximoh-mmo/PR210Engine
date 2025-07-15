@@ -1,9 +1,6 @@
-﻿using System.Data;
-
-namespace Engine.Core
+﻿namespace Engine.Core
 {
     public interface IComponent
     {
-        public void Update(float deltaTime);
     }
 }

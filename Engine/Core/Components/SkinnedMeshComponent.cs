@@ -6,10 +6,5 @@ namespace Engine.Core.Components
     {
         public IMesh? Mesh;
         public Material? Material;
-
-        public void Update(float deltaTime)
-        {
-            
-        }
     }
 }

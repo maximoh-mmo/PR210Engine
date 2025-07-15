@@ -1,5 +1,6 @@
 ﻿
 
+using EduEngineCore.PrimitiveObjects;
 using Engine;
 using Engine.Core;
 using Engine.Core.Components;
@@ -33,6 +34,14 @@ namespace Game
         {
             base.OnUpdateFrame(args);
 
+            var transform = Cube.GetComponent<TransformComponent>();
+            if (transform != null)
+            {
+                transform.Rotation += new Vector3(0, (float)args.Time * MathHelper.DegreesToRadians(90f), (float)args.Time * MathHelper.DegreesToRadians(-90f));
+            } 
+            
+            serviceProvider.GetService<TransformSystem>()?.Update([transform] , 0);
+
             if (KeyboardState.IsKeyDown(Keys.Escape))
             {
                 Close();
@@ -47,7 +56,7 @@ namespace Game
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(TriangleFace.Back);
 
-            var mesh = new PhongMesh();
+            var mesh = new CubeMesh();
 
             serviceCollection.AddSingleton<IMeshRenderingService, OpenTKMeshRenderSystem>();
             serviceCollection.AddSingleton<RenderSystem>();
@@ -55,8 +64,11 @@ namespace Game
             serviceCollection.AddSingleton<ILoggingService, SerilogLoggingService>();
             serviceCollection.AddSingleton<SerilogLoggingService>();
 
-            serviceProvider = serviceCollection.BuildServiceProvider();
+            serviceCollection.AddSingleton<TransformSystem>();
 
+
+            serviceProvider = serviceCollection.BuildServiceProvider();
+            
             IMeshRenderingService meshRenderer = new OpenTKMeshRenderSystem();
             RenderSystem = new RenderSystem(meshRenderer);
             
@@ -66,9 +78,9 @@ namespace Game
             specular.LoadTexture("Textures/specular.png");
 
             Material material = new Material(new PhongShaderDescriptor());
+            material.SetProperty("material.shininess", 0.2f);
             material.SetProperty("material.diffuse", diffuse);
             material.SetProperty("material.specular", specular);
-            material.SetProperty("material.shininess", 1f);
 
             Cube.AddComponent(new SkinnedMeshComponent()
             {
