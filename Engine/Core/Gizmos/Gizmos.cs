@@ -16,6 +16,8 @@ namespace Engine.Core.Gizmos
             _gizmoSystem = new GizmoSystem();
         }
 
-        static void DrawSphere();
+        static void DrawSphere()
+        {
+        }
     }
 }

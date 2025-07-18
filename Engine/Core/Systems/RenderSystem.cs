@@ -1,4 +1,4 @@
-﻿using Engine.Core.Services;
+﻿using Engine.Render;
 using OpenTK.Graphics.OpenGL4;
 
 namespace Engine.Core.Systems
@@ -14,7 +14,7 @@ namespace Engine.Core.Systems
 
         public void Render(List<GameObject> gameObjects, float aspectRatio)
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             gameObjects.ForEach(gameObject => meshRenderer.Render(gameObject, aspectRatio));
         }

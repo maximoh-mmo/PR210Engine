@@ -1,4 +1,6 @@
-﻿namespace Engine.Core.Services
+﻿using Engine.Core;
+
+namespace Engine.Render
 {
     public interface IMeshRenderingService
     {

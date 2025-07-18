@@ -1,4 +1,4 @@
-﻿namespace Engine.Core.Services
+﻿namespace Engine.Core.Logging
 {
     public interface ILoggingService
     {

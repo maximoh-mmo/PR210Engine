@@ -1,7 +1,9 @@
 ﻿namespace Engine.Core
 {
-    public class GameObject
+    public class GameObject(string name = "Game Object")
     {
+        public string Name { get; private set; } = name;
+
         private readonly HashSet<IComponent> _components = new();
 
         public T? GetComponent<T>() where T : IComponent => _components.OfType<T>().FirstOrDefault();

@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Engine.Core.Logging;
+using Serilog;
 using Serilog.Core;
 
 namespace Engine.Core.Services

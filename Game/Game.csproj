@@ -18,12 +18,28 @@
 		<Content Include="Textures\**\*" CopyToOutputDirectory="PreserveNewest" />
 		<Content Include="Shaders\*" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Shaders\unlit\colourtexture.vert" />
+	  <Content Include="Shaders\unlit\colourtexture.frag" />
+	  <Content Include="Shaders\unlit\screenspace.frag" />
+	  <Content Include="Shaders\unlit\screenspace.vert" />
+	  <Content Include="Shaders\unlit\instanced.frag" />
+	  <Content Include="Shaders\unlit\instanced.vert" />
+	  <Content Include="Shaders\unlit\transparent.frag" />
+	  <Content Include="Shaders\unlit\transparent.vert" />
+	  <Content Include="Shaders\unlit\texture.frag" />
+	  <Content Include="Shaders\unlit\texture.vert" />
+	  <Content Include="Shaders\unlit\colour.vert" />
+	  <Content Include="Shaders\unlit\colour.frag" />
+	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Engine\Engine.csproj" />
 	</ItemGroup>
     
 	<ItemGroup>
 	  <Folder Include="Properties\" />
+	  <Folder Include="Shaders\lit\" />
 	</ItemGroup>
 
 </Project>
