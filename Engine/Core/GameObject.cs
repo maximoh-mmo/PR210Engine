@@ -1,4 +1,6 @@
-﻿namespace Engine.Core
+﻿using Engine.Core.Interfaces;
+
+namespace Engine.Core
 {
     public class GameObject
     {

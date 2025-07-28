@@ -1,15 +1,10 @@
-﻿using Engine.Materials;
+﻿using Engine.Core.Interfaces;
 
 namespace Engine.Core.Components
 {
     public class SkinnedMeshComponent : IComponent
     {
         public IMesh? Mesh;
-        public Material? Material;
-
-        public void Update(float deltaTime)
-        {
-            
-        }
+        public Material.Material? Material;
     }
 }

@@ -1,12 +1,13 @@
-﻿
-
+﻿using System.Diagnostics;
 using Engine;
 using Engine.Core;
 using Engine.Core.Components;
+using Engine.Core.DebugGUI;
+using Engine.Core.Logging;
 using Engine.Core.PrimativeObjects;
 using Engine.Core.Services;
 using Engine.Core.Systems;
-using Engine.Materials;
+using Engine.Material;
 using Engine.Render;
 using Engine.Window;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,19 +21,27 @@ namespace Game
 {
     public class Game(int width, int height, string title) : FixedTimestepWindow(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title })
     {
-        private readonly IServiceCollection serviceCollection = new ServiceCollection();
-        private IServiceProvider? serviceProvider;
+        private readonly IServiceCollection _serviceCollection = new ServiceCollection();
+        private IServiceProvider? _serviceProvider;
+        private IPerformanceService? PerformanceService => _serviceProvider?.GetRequiredService<IPerformanceService>();
 
-        LoggingSystem? LoggingSystem;
-        RenderSystem? RenderSystem;
-        private List<GameObject> gameObjects;
-        GameObject Cube = new();
-
-        float _aspectRatio;
+        private RenderSystem? _renderSystem;
+        private readonly List<GameObject> _gameObjects = [];
+        private readonly GameObject _cube = new("Cube");
+        private readonly GameObject _sphere = new("Sphere");
+        private float _aspectRatio;
 
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
             base.OnUpdateFrame(args);
+
+            var cubeTransform = _cube.GetComponent<TransformComponent>();
+            if (cubeTransform != null)
+            {
+                cubeTransform.Rotation += new Vector3(0, (float)args.Time * MathHelper.DegreesToRadians(90f), (float)args.Time * MathHelper.DegreesToRadians(-90f));
+            } 
+            
+            _serviceProvider.GetService<TransformSystem>()?.Update(_gameObjects);
 
             if (KeyboardState.IsKeyDown(Keys.Escape))
             {
@@ -46,43 +55,56 @@ namespace Game
 
             GL.ClearColor(0.5f, 0.5f, 0.5f, 1f);
             GL.Enable(EnableCap.CullFace);
+            GL.Enable(EnableCap.DepthTest);
             GL.CullFace(TriangleFace.Back);
 
-            var mesh = new PhongMesh();
+            _serviceCollection.AddSingleton<IMeshRenderingService, OpenTKMeshRenderService>();
+            _serviceCollection.AddSingleton<RenderSystem>();
 
-            serviceCollection.AddSingleton<IMeshRenderingService, OpenTKMeshRenderSystem>();
-            serviceCollection.AddSingleton<RenderSystem>();
+            _serviceCollection.AddSingleton<ILoggingService, SerilogLoggingService>();
+            _serviceCollection.AddSingleton<SerilogLoggingService>();
 
-            serviceCollection.AddSingleton<ILoggingService, ConsoleLoggingSystem>();
-            serviceCollection.AddSingleton<LoggingSystem>();
+            _serviceCollection.AddSingleton<TransformSystem>();
 
-            serviceProvider = serviceCollection.BuildServiceProvider();
+            _serviceCollection.AddSingleton<IPerformanceService, PerformanceService>();
+            _serviceCollection.AddSingleton<IDebugRenderer, ImGuiPerformanceRenderer>();
+            _serviceCollection.AddSingleton<IDebugGuiService>(sp => new OpenTKImGuiService(this));
 
-            IMeshRenderingService meshRenderer = new OpenTKMeshRenderSystem();
-            RenderSystem = new RenderSystem(meshRenderer);
+            _serviceProvider = _serviceCollection.BuildServiceProvider();
+            
+            IMeshRenderingService meshRenderer = new OpenTKMeshRenderService();
+            _renderSystem = new RenderSystem(meshRenderer);
 
-            ILoggingService logger = new ConsoleLoggingSystem();
-            LoggingSystem = new LoggingSystem(logger);
+            var texture = new Texture();
+            texture.LoadTexture("Textures/rocky_ground.jpg");
 
-            Texture diffuse = new Texture();
-            Texture specular = new Texture();
-            diffuse.LoadTexture("Textures/rocky_ground.jpg");
-            specular.LoadTexture("Textures/specular.png");
+            var material = new Material(new DiffuseDescriptor());
+            material.SetProperty("material.diffuse", texture);
 
-            Material material = new Material(new PhongShaderDescriptor());
-            material.SetProperty("material.diffuse", diffuse);
-            material.SetProperty("material.specular", specular);
-            material.SetProperty("material.shininess", 1f);
-
-            Cube.AddComponent(new SkinnedMeshComponent()
+            _sphere.AddComponent(new SkinnedMeshComponent()
             {
                 Material = material,
-                Mesh = mesh
+                Mesh = new SphereMesh()
             });
-            
-            serviceProvider.GetService<LoggingSystem>()?.Log("Cube added SkinnedMeshComponent",LogLevel.Info);
 
-            Cube.AddComponent(new TransformComponent());
+            _sphere.AddComponent(new TransformComponent());
+            _sphere.AddComponent(new HierarchyComponent());
+            _sphere.GetComponent<TransformComponent>()!.Position = new Vector3(1, 0, 0);
+            _gameObjects.Add(_sphere);
+            PerformanceService.GameObjects.Add(_sphere);
+
+            _cube.AddComponent(new SkinnedMeshComponent()
+            {
+                Material = material,
+                Mesh = new CubeMesh()
+            });
+            _cube.AddComponent(new TransformComponent());
+            _cube.AddComponent(new HierarchyComponent());
+            HierarchyComponent.SetParent(_cube, _sphere);
+            _gameObjects.Add(_cube);
+            PerformanceService.GameObjects.Add(_cube);
+            _serviceProvider.GetService<ILoggingService>()?.LogTrace("Cube created with SkinnedMeshComponent");
+
         }
         protected override void OnUnload()
         {
@@ -95,27 +117,14 @@ namespace Game
 
         protected override void OnRenderFrame(FrameEventArgs args)
         {
+            PerformanceService.BeginFrame();
             base.OnRenderFrame(args);
-
-            serviceProvider.GetService<RenderSystem>()?.Render(new List<GameObject>(){Cube},_aspectRatio);
-
-            GL.Clear(ClearBufferMask.ColorBufferBit);
-
-            var skinnedMeshComp = Cube.GetComponent<SkinnedMeshComponent>();
-            if (skinnedMeshComp == null) return;
-            if (skinnedMeshComp.Mesh == null) return;
-
-            skinnedMeshComp.Material?.Apply(Cube.GetComponent<TransformComponent>()?.ModelMatrix ??
-                                            Matrix4.Identity,
-
-                Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f),
-                (float)Size.X / Size.Y);
-
-            GL.BindVertexArray(skinnedMeshComp.Mesh.MeshData.VAO);
-            if (skinnedMeshComp.Mesh.DrawMode == DrawMode.Triangles)
-                GL.DrawElements(PrimitiveType.Triangles, skinnedMeshComp.Mesh.MeshData.Indices.Length, DrawElementsType.UnsignedInt, 0);
-
+            _serviceProvider?.GetService<RenderSystem>()?.Render(_gameObjects,_aspectRatio);
+            _serviceProvider?.GetService<IDebugGuiService>()?.Update((float)args.Time);
+            _serviceProvider?.GetService<IDebugRenderer>()?.Render();
+            _serviceProvider?.GetService<IDebugGuiService>().Render();
             SwapBuffers();
+            PerformanceService.EndFrame();
         }
 
         protected override void OnFramebufferResize(FramebufferResizeEventArgs args)

@@ -1,8 +1,8 @@
-﻿
+﻿using Engine.Core.DataTypes;
 using Engine.Render;
 using OpenTK.Mathematics;
 
-namespace Engine.Materials
+namespace Engine.Material
 {
     public class Material
     {
@@ -24,20 +24,21 @@ namespace Engine.Materials
 
         public void SetProperty(string name, object value)
         {
-            if (!_properties.ContainsKey(name))
+
+            if (!_properties.TryGetValue(name, out var tuple))
             {
                 throw new Exception($"Property {name} not found");
             }
-            _properties[name] = (value, _properties[name].TextureUnit);
+            _properties[name] = (value, tuple.TextureUnit);
         }
 
         public void SetProperty(string name, Texture texture)
         {
-            if (!_properties.ContainsKey(name))
+            if (!_properties.TryGetValue(name, out var tuple))
             {
                 throw new Exception($"Property {name} not found");
             }
-            _properties[name] = (texture, _properties[name].TextureUnit);
+            _properties[name] = (texture, tuple.TextureUnit);
         }
 
 

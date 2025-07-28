@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using Engine.Core.Interfaces;
+using OpenTK.Mathematics;
 
 namespace Engine.Core.Components
 {

@@ -1,4 +1,5 @@
 ﻿using Engine.Core.Components;
+using Engine.Core.DataTypes;
 using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 

@@ -1,4 +1,6 @@
-﻿namespace Engine.Render
+﻿using Engine.Core.DataTypes;
+
+namespace Engine.Render
 {
     public class ShaderProperty(string name, ShaderPropertyType type, object defaultValue)
     {
