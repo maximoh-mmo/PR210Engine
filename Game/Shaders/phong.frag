@@ -33,6 +33,7 @@ void main()
     vec3 specularMap = texture(material.specular, texCoords).rgb;
     vec3 specular = spec * specularMap;
 
-    vec3 result = diffuse + specular;
+    vec3 ambient = 0.1 * texColor;
+    vec3 result = ambient + diffuse + specular;
     FragColour = vec4(result, 1.0);
 }

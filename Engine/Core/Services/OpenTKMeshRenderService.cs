@@ -2,27 +2,20 @@
 using Engine.Core.DataTypes;
 using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL4;
+using Engine.Render;
 
 namespace Engine.Core.Services
 {
-    public class OpenTKMeshRenderSystem : IMeshRenderingService
+    public class OpenTKMeshRenderService : IMeshRenderingService
     {
         public void Render(GameObject gameObject, float aspectRatio)
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit);
-
             var skinnedMeshComp = gameObject.GetComponent<SkinnedMeshComponent>();
             if (skinnedMeshComp == null) return;
             if (skinnedMeshComp.Mesh == null) return;
-
-            Matrix4 Model = gameObject.GetComponent<TransformComponent>()?.ModelMatrix ??
-                            Matrix4.Identity;
-
-            Matrix4.CreateRotationX(5, out var result);
-
-            Model = Model * result;
-
-            skinnedMeshComp.Material?.Apply(Model,
+            
+            skinnedMeshComp.Material?.Apply(
+                gameObject.GetComponent<TransformComponent>()?.WorldMatrix ?? Matrix4.Identity,
                 Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f),
                 aspectRatio);
 

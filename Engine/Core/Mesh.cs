@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using Engine.Render;
+using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Core
 {
@@ -11,9 +12,13 @@ namespace Engine.Core
 
     public enum DrawMode
     {
+        Points,
+        Lines,
+        LineStrip,
+        LineLoop,
         Triangles,
         TriangleStrip,
-        Lines
+        TriangleFan,
     }
 
     public interface IMesh
@@ -27,7 +32,7 @@ namespace Engine.Core
         public MeshData MeshData { get; }
         public DrawMode DrawMode { get; }
 
-        public Mesh(float[] vertices, uint[] indices, DrawMode drawMode)
+        public Mesh(float[] vertices, uint[] indices, DrawMode drawMode, VertexAttribute[]? attributes = null, int stride = 0)
         {
             MeshData = new MeshData()
             {
@@ -35,24 +40,24 @@ namespace Engine.Core
                 Vertices = vertices,
                 VAO = GL.GenVertexArray()
             };
-            // Vertex Buffer Object (VBO) ID (Name) bekommen
+            // Vertex Buffer Object (VBO) ID (Name)
             var VBO = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 
-            // Vertexdaten in VBO laden
+            // Load Vertex data in VBO
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 
             // Vertex Array Object (VAO)
             GL.BindVertexArray(MeshData.VAO);
 
-            // Indexliste in Element Buffer Object (EBO) laden und damit an VAO binden
+            // Create Element Buffer Object (EBO) fill with index list and bind to VAO
             var EBO = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 
-            // VAO binden
+            // Bind VAO
             GL.BindVertexArray(MeshData.VAO);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO); // Add this line
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
 
             // Position attribute
             GL.EnableVertexAttribArray(0);
@@ -63,7 +68,15 @@ namespace Engine.Core
             // Color attribute
             GL.EnableVertexAttribArray(2);
             DrawMode = drawMode;
-            SetVertexAttributes();
+
+            if (attributes != null && attributes.Length > 0)
+            {
+                SetVertexAttributes(attributes, stride);
+            }
+            else
+            {
+                SetVertexAttributes();
+            }
         }
     
         public void SetVertexAttributes()
@@ -94,6 +107,14 @@ namespace Engine.Core
                 8 * sizeof(float),
                 5 * sizeof(float));
             GL.EnableVertexAttribArray(2);
+        }
+        public void SetVertexAttributes(VertexAttribute[] attributes, int stride)
+        {
+            foreach (var attr in attributes)
+            {
+                GL.VertexAttribPointer(attr.Location, attr.Size, VertexAttribPointerType.Float, false, stride, attr.Offset);
+                GL.EnableVertexAttribArray(attr.Location);
+            }
         }
     }
 }
