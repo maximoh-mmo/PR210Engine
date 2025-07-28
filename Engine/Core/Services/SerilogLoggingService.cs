@@ -1,4 +1,4 @@
-﻿using Engine.Core.Logging;
+﻿using Engine.Core.Interfaces;
 using Serilog;
 using Serilog.Core;
 

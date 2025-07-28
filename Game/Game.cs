@@ -2,13 +2,13 @@
 using Engine;
 using Engine.Core;
 using Engine.Core.Components;
-using Engine.Core.DebugGUI;
-using Engine.Core.Logging;
+using Engine.Core.Interfaces;
 using Engine.Core.PrimativeObjects;
 using Engine.Core.Services;
 using Engine.Core.Systems;
 using Engine.Material;
-using Engine.Render;
+using Engine.Render.Graphics;
+using Engine.Shaders.Descriptors;
 using Engine.Window;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTK.Graphics.OpenGL4;
@@ -56,7 +56,7 @@ namespace Game
             GL.ClearColor(0.5f, 0.5f, 0.5f, 1f);
             GL.Enable(EnableCap.CullFace);
             GL.Enable(EnableCap.DepthTest);
-            GL.CullFace(TriangleFace.Back);
+            //GL.CullFace(TriangleFace.Back);
 
             _serviceCollection.AddSingleton<IMeshRenderingService, OpenTKMeshRenderService>();
             _serviceCollection.AddSingleton<RenderSystem>();
@@ -70,6 +70,8 @@ namespace Game
             _serviceCollection.AddSingleton<IDebugRenderer, ImGuiPerformanceRenderer>();
             _serviceCollection.AddSingleton<IDebugGuiService>(sp => new OpenTKImGuiService(this));
 
+            _serviceCollection.AddSingleton<IRenderContext, OpenTKRenderContext>();
+            _serviceCollection.AddSingleton<IRenderSystem, RenderSystem>();
             _serviceProvider = _serviceCollection.BuildServiceProvider();
             
             IMeshRenderingService meshRenderer = new OpenTKMeshRenderService();
@@ -132,6 +134,7 @@ namespace Game
             base.OnFramebufferResize(args);
             GL.Viewport(0, 0, args.Width, args.Height);
             _aspectRatio = args.Width / args.Height;
+            _serviceProvider?.GetService<IDebugGuiService>()?.OnResize(args.Width,args.Height);
         }
     }
 }

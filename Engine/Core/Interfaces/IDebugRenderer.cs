@@ -1,4 +1,4 @@
-﻿namespace Engine.Core.DebugGUI
+﻿namespace Engine.Core.Interfaces
 {
     public interface IDebugRenderer
     {

@@ -1,6 +1,7 @@
 ﻿using Engine.Core.DataTypes;
+using Engine.Render;
 
-namespace Engine.Render
+namespace Engine.Shaders.Descriptors
 {
     public class DiffuseDescriptor : ShaderDescriptor
     {

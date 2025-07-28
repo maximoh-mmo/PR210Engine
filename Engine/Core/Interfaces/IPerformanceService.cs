@@ -1,7 +1,8 @@
-﻿using Engine.Core.Services;
+﻿using Engine.Core.DebugGUI;
+using Engine.Core.Services;
 using OpenTK.Mathematics;
 
-namespace Engine.Core.DebugGUI
+namespace Engine.Core.Interfaces
 {
     public interface IPerformanceService
     {

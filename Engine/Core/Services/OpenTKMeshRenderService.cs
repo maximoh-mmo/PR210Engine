@@ -1,8 +1,7 @@
 ﻿using Engine.Core.Components;
-using Engine.Core.DataTypes;
 using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL4;
-using Engine.Render;
+using Engine.Core.Interfaces;
 
 namespace Engine.Core.Services
 {
@@ -11,8 +10,17 @@ namespace Engine.Core.Services
         public void Render(GameObject gameObject, float aspectRatio)
         {
             var skinnedMeshComp = gameObject.GetComponent<SkinnedMeshComponent>();
-            if (skinnedMeshComp == null) return;
-            if (skinnedMeshComp.Mesh == null) return;
+            if (skinnedMeshComp == null)
+            {
+                Console.WriteLine($"GameObject {gameObject.Name} does not have a SkinnedMeshComponent.");
+                return;
+            }
+
+            if (skinnedMeshComp.Mesh == null)
+            {
+                Console.WriteLine($"GameObject {gameObject.Name} has a SkinnedMeshComponent but no Mesh assigned.");
+                return;
+            }
             
             skinnedMeshComp.Material?.Apply(
                 gameObject.GetComponent<TransformComponent>()?.WorldMatrix ?? Matrix4.Identity,
@@ -23,6 +31,11 @@ namespace Engine.Core.Services
             if (skinnedMeshComp.Mesh.DrawMode == DrawMode.Triangles)
                 GL.DrawElements(PrimitiveType.Triangles, skinnedMeshComp.Mesh.MeshData.Indices.Length,
                     DrawElementsType.UnsignedInt, 0);
+
+            else if(skinnedMeshComp.Mesh.DrawMode == DrawMode.TriangleStrip)
+                GL.DrawElements(PrimitiveType.TriangleStrip, skinnedMeshComp.Mesh.MeshData.Indices.Length,
+                    DrawElementsType.UnsignedInt, 0);
+
         }
     }
 }

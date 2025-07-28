@@ -1,6 +1,6 @@
 ﻿using Engine.Core;
 
-namespace Engine.Render
+namespace Engine.Core.Interfaces
 {
     public interface IMeshRenderingService
     {

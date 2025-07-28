@@ -1,6 +1,6 @@
 ﻿using Engine.Core.DataTypes;
 
-namespace Engine.Core.Interfaces
+namespace Engine.Core
 {
     public interface ILayout
     {

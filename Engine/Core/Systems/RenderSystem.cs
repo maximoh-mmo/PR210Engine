@@ -1,22 +1,29 @@
-﻿using Engine.Render;
+﻿using Engine.Core.Interfaces;
+using Engine.Render.Graphics;
+using Engine.Render.passes;
+using Engine.Render.Pipeline;
 using OpenTK.Graphics.OpenGL4;
 
 namespace Engine.Core.Systems
 {
-    public class RenderSystem
+    public class RenderSystem : IRenderSystem
     {
-        private readonly IMeshRenderingService meshRenderer;
+        private readonly IMeshRenderingService _meshRenderer;
+
+        private RenderPipeline _renderPipeline;
 
         public RenderSystem(IMeshRenderingService meshRenderer)
         {
-            this.meshRenderer = meshRenderer;
+            _meshRenderer = meshRenderer;
+            _renderPipeline = new RenderPipeline();
+            _renderPipeline.AddPass(new WireframePass());
+            _renderPipeline.AddPass(new ScenePass(_meshRenderer, new OpenTKRenderContext()));
         }
 
         public void Render(List<GameObject> gameObjects, float aspectRatio)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            gameObjects.ForEach(gameObject => meshRenderer.Render(gameObject, aspectRatio));
+            _renderPipeline.Execute(gameObjects, aspectRatio);
         }
     }
 }

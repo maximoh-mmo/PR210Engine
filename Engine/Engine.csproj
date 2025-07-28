@@ -23,5 +23,9 @@
 		<Content Include="Shaders\*" CopyToOutputDirectory="PreserveNewest" />
 		<Content Include="..\Game\Textures\**\*" CopyToOutputDirectory="PreserveNewest" />
 		</ItemGroup>
+  
+	<ItemGroup>
+	  <Folder Include="Core\Logging\" />
+	</ItemGroup>
 
 </Project>

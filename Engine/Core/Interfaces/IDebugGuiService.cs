@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Engine.Core.DebugGUI;
+namespace Engine.Core.Interfaces;
 
 public interface IDebugGuiService : IDisposable
 {

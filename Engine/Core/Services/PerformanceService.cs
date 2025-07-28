@@ -1,4 +1,5 @@
 ﻿using Engine.Core.DebugGUI;
+using Engine.Core.Interfaces;
 using System.Diagnostics;
 
 namespace Engine.Core.Services

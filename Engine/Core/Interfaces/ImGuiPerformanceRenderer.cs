@@ -1,8 +1,7 @@
 ﻿using Engine.Core.Components;
-using Engine.Core.DebugGUI;
 using ImGuiNET;
 
-namespace Engine.Render
+namespace Engine.Core.Interfaces
 {
     public class ImGuiPerformanceRenderer : IDebugRenderer
     {

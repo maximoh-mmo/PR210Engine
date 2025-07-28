@@ -1,5 +1,4 @@
-﻿using Engine.Core.DebugGUI;
-using Engine.Core.Interfaces;
+﻿using Engine.Core.Interfaces;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 

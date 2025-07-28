@@ -1,4 +1,4 @@
-﻿namespace Engine.Core.Interfaces
+﻿namespace Engine.Core
 {
     public interface IComponent
     {
