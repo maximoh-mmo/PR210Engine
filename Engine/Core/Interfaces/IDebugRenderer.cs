@@ -2,7 +2,6 @@
 {
     public interface IDebugRenderer
     {
-       
         void Render();
     }
 }

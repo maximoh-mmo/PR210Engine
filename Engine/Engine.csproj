@@ -26,6 +26,7 @@
   
 	<ItemGroup>
 	  <Folder Include="Core\Logging\" />
+	  <Folder Include="Core\Input\" />
 	</ItemGroup>
 
 </Project>

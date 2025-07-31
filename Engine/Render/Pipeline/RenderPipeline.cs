@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Engine.Core;
+using Engine.Core.Camera;
 using Engine.Core.Interfaces;
 
 namespace Engine.Render.Pipeline
@@ -7,6 +8,8 @@ namespace Engine.Render.Pipeline
     public class RenderPipeline
     {
         private List<IRenderPass>? _passes;
+
+        public List<IRenderPass>?GetAllPasses => _passes;
 
         public void AddPass(IRenderPass pass)
         {
@@ -38,14 +41,14 @@ namespace Engine.Render.Pipeline
             });
         }
 
-        public void Execute(List<GameObject> gameObjects, float aspectRatio)
+        public void Execute(IReadOnlyList<GameObject> gameObjects, CameraComponent camera)
         {
             if (_passes == null) return;
             // Execute each pass
             foreach (var pass in _passes)
             { 
                 if (!pass.Enabled) continue;
-                pass.Execute(gameObjects, aspectRatio);
+                pass.Execute(gameObjects, camera);
             }
         }
     }

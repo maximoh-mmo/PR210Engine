@@ -1,4 +1,5 @@
 ﻿using Engine.Core;
+using Engine.Core.Camera;
 using Engine.Core.Interfaces;
 
 namespace Engine.Render.passes
@@ -22,14 +23,14 @@ namespace Engine.Render.passes
         }
         public IReadOnlyList<string> Dependencies => ["WireFrame"];
 
-        public void Execute(List<GameObject> gameObjects, float aspectRatio)
+        public void Execute(IReadOnlyList<GameObject> gameObjects, CameraComponent camera)
         {
             if (!Enabled) return;
             // Render each game object in the scene
             renderContext.BindFramebuffer(renderContext.DefaultFboId);
             foreach (var gameObject in gameObjects)
             {
-                meshRenderer.Render(gameObject, aspectRatio);
+                meshRenderer.Render(gameObject, camera);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Engine.Core;
+using Engine.Core.Camera;
 using Engine.Core.Interfaces;
 using OpenTK.Graphics.OpenGL4;
 
@@ -16,10 +17,15 @@ namespace Engine.Render.passes
         public bool Enabled
         {
             get { return _enabled;}
-            set { _enabled = value; }
+            set {
+                if (value == false)
+                {
+                    GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
+                } 
+                _enabled = value; }
         }
         public IReadOnlyList<string> Dependencies => [];
-        public void Execute(List<GameObject> gameObjects, float aspectRatio)
+        public void Execute(IReadOnlyList<GameObject> gameObjects, CameraComponent camera)
         {
             GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Line);
             GL.LineWidth(1.0f);

@@ -1,4 +1,5 @@
-﻿using Engine.Core.DataTypes;
+﻿using Engine.Core.Camera;
+using Engine.Core.DataTypes;
 using Engine.Render;
 using OpenTK.Mathematics;
 
@@ -42,15 +43,13 @@ namespace Engine.Material
         }
 
 
-        public void Apply(Matrix4 model, Matrix4 view, float aspectRatio)
+        public void Apply(Matrix4 model, CameraComponent camera)
         {
             _shader.Use();
             _shader.SetMatrix4("model", model);
-            _shader.SetMatrix4("view", view);
-            _shader.SetMatrix4("projection",
-                Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(80), 800f / 600f, 0.1f, 100f));
-
-            _shader.SetVector3("viewPos", new Vector3(0, 0, 3));
+            _shader.SetMatrix4("view", camera.ViewMatrix);
+            _shader.SetMatrix4("projection", camera.ProjectionMatrix);
+            _shader.SetVector3("viewPos", camera.Position);
             _shader.SetVector3("lightPos", new Vector3(2, 2, 2));
 
             foreach (var property in _properties.Keys.ToList())

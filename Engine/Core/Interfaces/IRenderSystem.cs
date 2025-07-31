@@ -1,7 +1,9 @@
-﻿namespace Engine.Core.Interfaces
+﻿using Engine.Core.Camera;
+
+namespace Engine.Core.Interfaces
 {
     public interface IRenderSystem
     { 
-        void Render(List<GameObject> gameObjects, float aspectRatio);
+        void Render(IReadOnlyList<GameObject> gameObjects, CameraComponent camera);
     }
 }

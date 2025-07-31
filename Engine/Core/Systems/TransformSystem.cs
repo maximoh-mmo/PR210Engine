@@ -5,7 +5,6 @@ namespace Engine.Core.Systems
 {
     public class TransformSystem
     {
-
         public void Update (List<GameObject> gameObjects)
         { 
             var rootObjects = gameObjects.Where(go => go.GetComponent<HierarchyComponent>()?.IsRoot == true).ToList();

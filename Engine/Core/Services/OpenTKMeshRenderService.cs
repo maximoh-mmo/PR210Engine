@@ -1,4 +1,5 @@
-﻿using Engine.Core.Components;
+﻿using Engine.Core.Camera;
+using Engine.Core.Components;
 using OpenTK.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using Engine.Core.Interfaces;
@@ -7,7 +8,7 @@ namespace Engine.Core.Services
 {
     public class OpenTKMeshRenderService : IMeshRenderingService
     {
-        public void Render(GameObject gameObject, float aspectRatio)
+        public void Render(GameObject gameObject, CameraComponent camera)
         {
             var skinnedMeshComp = gameObject.GetComponent<SkinnedMeshComponent>();
             if (skinnedMeshComp == null)
@@ -22,10 +23,7 @@ namespace Engine.Core.Services
                 return;
             }
             
-            skinnedMeshComp.Material?.Apply(
-                gameObject.GetComponent<TransformComponent>()?.WorldMatrix ?? Matrix4.Identity,
-                Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f),
-                aspectRatio);
+            skinnedMeshComp.Material?.Apply(gameObject.GetComponent<TransformComponent>()?.WorldMatrix ?? Matrix4.Identity, camera);
 
             GL.BindVertexArray(skinnedMeshComp.Mesh.MeshData.VAO);
             if (skinnedMeshComp.Mesh.DrawMode == DrawMode.Triangles)
