@@ -1,5 +1,4 @@
-﻿using Engine.Core;
-using Engine.Core.Camera;
+﻿using Engine.Core.Camera;
 
 namespace Engine.Core.Interfaces
 {

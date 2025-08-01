@@ -1,7 +1,7 @@
 ﻿using Engine.Core.DataTypes;
 namespace Engine.Core.PrimativeObjects;
 
-public class CubeMesh() : Mesh(Vertices, Indices, DrawMode.Triangles)
+public class CubeOpenTkMesh() : OpenTKMesh(Vertices, Indices, DrawMode.Triangles)
 {
     private static readonly float[] Vertices =
     [

@@ -1,4 +1,6 @@
-﻿using Engine.Render;
+﻿using Engine.Core.DataTypes;
+using Engine.Core.Interfaces;
+using Engine.Render;
 using OpenTK.Graphics.OpenGL;
 
 namespace Engine.Core
@@ -10,29 +12,12 @@ namespace Engine.Core
         public float[] Vertices;
     }
 
-    public enum DrawMode
-    {
-        Points,
-        Lines,
-        LineStrip,
-        LineLoop,
-        Triangles,
-        TriangleStrip,
-        TriangleFan,
-    }
-
-    public interface IMesh
-    {
-        MeshData MeshData { get; }
-        DrawMode DrawMode { get; }
-    }
-
-    public class Mesh : IMesh
+    public class OpenTKMesh : IMesh
     {
         public MeshData MeshData { get; }
         public DrawMode DrawMode { get; }
 
-        public Mesh(float[] vertices, uint[] indices, DrawMode drawMode, VertexAttribute[]? attributes = null, int stride = 0)
+        public OpenTKMesh(float[] vertices, uint[] indices, DrawMode drawMode, VertexAttribute[]? attributes = null, int stride = 0)
         {
             MeshData = new MeshData()
             {

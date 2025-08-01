@@ -126,7 +126,7 @@ namespace Game
             _sphere.AddComponent(new SkinnedMeshComponent()
             {
                 Material = material,
-                Mesh = new SphereMesh()
+                Mesh = new SphereOpenTkMesh()
             });
             _sphere.AddComponent(new BoundingSphereComponent(null, 0.5f));
             _sphere.AddComponent(new TransformComponent());
@@ -138,7 +138,7 @@ namespace Game
             _cube.AddComponent(new SkinnedMeshComponent()
             {
                 Material = material,
-                Mesh = new CubeMesh()
+                Mesh = new CubeOpenTkMesh()
             });
             _cube.AddComponent(new BoundingSphereComponent(null,0.5f));
             _cube.AddComponent(new TransformComponent());

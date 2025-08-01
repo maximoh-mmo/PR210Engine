@@ -2,7 +2,7 @@
 
 namespace Engine.Core.PrimativeObjects
 {
-    public class PhongMesh() : Mesh(Vertices, Indices, DrawMode.Triangles)
+    public class PhongOpenTkMesh() : OpenTKMesh(Vertices, Indices, DrawMode.Triangles)
     {
         private static readonly float[] Vertices =
         [

@@ -1,8 +1,8 @@
 ﻿using Engine.Core.DataTypes;
 namespace Engine.Core.PrimativeObjects;
 
-public class SphereMesh(int latitudeSegments = 16, int longitudeSegments = 32, float radius = 0.5f)
-    : Mesh(CreateVertices(latitudeSegments, longitudeSegments, radius),
+public class SphereOpenTkMesh(int latitudeSegments = 16, int longitudeSegments = 32, float radius = 0.5f)
+    : OpenTKMesh(CreateVertices(latitudeSegments, longitudeSegments, radius),
         CreateIndices(latitudeSegments, longitudeSegments),
         DrawMode.Triangles)
 {

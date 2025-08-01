@@ -19,7 +19,7 @@ namespace Engine.Core.Services
 
             if (skinnedMeshComp.Mesh == null)
             {
-                Console.WriteLine($"GameObject {gameObject.Name} has a SkinnedMeshComponent but no Mesh assigned.");
+                Console.WriteLine($"GameObject {gameObject.Name} has a SkinnedMeshComponent but no OpenTKMesh assigned.");
                 return;
             }
             
